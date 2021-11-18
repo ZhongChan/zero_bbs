@@ -2,7 +2,7 @@
 package types
 
 type CaptchaRequest struct {
-	Phone string `json:"phone"`
+	Phone string `json:"phone"` //手机号码
 }
 
 type CaptchaResponse struct {

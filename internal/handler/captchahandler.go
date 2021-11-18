@@ -9,7 +9,7 @@ import (
 	"zero-mall/zero_bbs/internal/types"
 )
 
-func CaptchaStoreHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func CaptchaHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.CaptchaRequest
 		if err := httpx.Parse(r, &req); err != nil {
@@ -17,8 +17,8 @@ func CaptchaStoreHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewCaptchaStoreLogic(r.Context(), ctx)
-		resp, err := l.CaptchaStore(req)
+		l := logic.NewCaptchaLogic(r.Context(), ctx)
+		resp, err := l.Captcha(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

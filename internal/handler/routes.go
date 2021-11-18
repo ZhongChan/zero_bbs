@@ -15,7 +15,7 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodPost,
 				Path:    "/api/captcha",
-				Handler: CaptchaStoreHandler(serverCtx),
+				Handler: CaptchaHandler(serverCtx),
 			},
 		},
 	)

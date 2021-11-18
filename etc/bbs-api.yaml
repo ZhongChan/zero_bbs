@@ -1,3 +1,6 @@
 Name: bbs-api
 Host: 0.0.0.0
 Port: 8888
+
+Cache:
+  - Host: localhost:6379

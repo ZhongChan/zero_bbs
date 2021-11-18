@@ -8,7 +8,7 @@ info(
 )
 
 type CaptchaRequest {
-	Phone string `json:"phone"`
+	Phone string `json:"phone"` //手机号码
 }
 
 type CaptchaResponse {
@@ -20,7 +20,7 @@ type CaptchaResponse {
 service bbs-api {
 	
 	//创建图片验证码
-	@handler CaptchaStore
+	@handler CaptchaHandler
 	post /api/captcha (CaptchaRequest) returns(CaptchaResponse)
 	
 	//发送短信验证码
