@@ -1,0 +1,33 @@
+syntax = "v1"
+
+info(
+	title: // TODO: add title
+	desc: // TODO: add description
+	author: "SM1701"
+	email: "717513736@qq.com"
+)
+
+type CaptchaRequest {
+	Phone string `json:"phone"`
+}
+
+type CaptchaResponse {
+	Captcha_key           string `json:"captcha_key"`
+	Expired_at            string `json:"expired_at"`
+	Captcha_image_content string `json:"captcha_image_content"`
+}
+
+service bbs-api {
+	
+	//创建图片验证码
+	@handler CaptchaStore
+	post /api/captcha (CaptchaRequest) returns(CaptchaResponse)
+	
+	//发送短信验证码
+	//@handler GetUser
+	//post /api/verificationCodes(request) returns(response)
+	
+	//用户注册
+	//@handler CreateUser
+	//post /api/users(request)
+}
