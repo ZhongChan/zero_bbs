@@ -25,3 +25,13 @@ func (s *UserServer) GetCaptcha(ctx context.Context, in *user.CaptchaRequest) (*
 	l := logic.NewGetCaptchaLogic(ctx, s.svcCtx)
 	return l.GetCaptcha(in)
 }
+
+func (s *UserServer) VerificationCodes(ctx context.Context, in *user.VerificationCodeRequest) (*user.VerificationCodeResponse, error) {
+	l := logic.NewVerificationCodesLogic(ctx, s.svcCtx)
+	return l.VerificationCodes(in)
+}
+
+func (s *UserServer) Register(ctx context.Context, in *user.UserRequest) (*user.UserResponse, error) {
+	l := logic.NewRegisterLogic(ctx, s.svcCtx)
+	return l.Register(in)
+}

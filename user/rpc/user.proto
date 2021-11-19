@@ -12,6 +12,29 @@ message CaptchaResponse {
   string captcha_image_content = 3;
 }
 
+message VerificationCodeRequest {
+  string phone = 1;
+}
+
+message VerificationCodeResponse {
+  string key = 1;
+  string expired_at = 2;
+}
+
+message UserRequest {
+  string name = 1;
+  string password = 2;
+  string verification_key = 3;
+  string verification_code = 4;
+}
+
+message UserResponse {
+  string name = 1;
+  string phone = 2;
+}
+
 service User {
   rpc GetCaptcha(CaptchaRequest) returns(CaptchaResponse);
+  rpc VerificationCodes(VerificationCodeRequest)   returns(VerificationCodeResponse);
+  rpc Register(UserRequest) returns(UserResponse);
 }

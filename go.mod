@@ -8,4 +8,5 @@ require (
 	github.com/tal-tech/go-zero v1.2.3
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410 // indirect
 	google.golang.org/grpc v1.42.0
+	k8s.io/apimachinery v0.20.12
 )

@@ -13,11 +13,17 @@ import (
 )
 
 type (
-	CaptchaRequest  = user.CaptchaRequest
-	CaptchaResponse = user.CaptchaResponse
+	CaptchaRequest           = user.CaptchaRequest
+	CaptchaResponse          = user.CaptchaResponse
+	UserRequest              = user.UserRequest
+	UserResponse             = user.UserResponse
+	VerificationCodeRequest  = user.VerificationCodeRequest
+	VerificationCodeResponse = user.VerificationCodeResponse
 
 	User interface {
 		GetCaptcha(ctx context.Context, in *CaptchaRequest, opts ...grpc.CallOption) (*CaptchaResponse, error)
+		VerificationCodes(ctx context.Context, in *VerificationCodeRequest, opts ...grpc.CallOption) (*VerificationCodeResponse, error)
+		Register(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	}
 
 	defaultUser struct {
@@ -34,4 +40,14 @@ func NewUser(cli zrpc.Client) User {
 func (m *defaultUser) GetCaptcha(ctx context.Context, in *CaptchaRequest, opts ...grpc.CallOption) (*CaptchaResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.GetCaptcha(ctx, in, opts...)
+}
+
+func (m *defaultUser) VerificationCodes(ctx context.Context, in *VerificationCodeRequest, opts ...grpc.CallOption) (*VerificationCodeResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.VerificationCodes(ctx, in, opts...)
+}
+
+func (m *defaultUser) Register(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.Register(ctx, in, opts...)
 }
