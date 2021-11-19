@@ -41,7 +41,7 @@ func (l *GetCaptchaLogic) GetCaptcha(in *user.CaptchaRequest) (*user.CaptchaResp
 	err = l.svcCtx.Cache.SetWithExpire(id, map[string]interface{}{
 		"phone":  in.Phone,
 		"answer": answer,
-	}, time.Second*2)
+	}, time.Minute*2)
 
 	if err != nil {
 		return nil, err

@@ -13,7 +13,8 @@ message CaptchaResponse {
 }
 
 message VerificationCodeRequest {
-  string phone = 1;
+  string captcha_key = 1;
+  string captcha_code = 2;
 }
 
 message VerificationCodeResponse {
