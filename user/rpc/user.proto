@@ -31,7 +31,7 @@ message UserRequest {
 
 message UserResponse {
   string name = 1;
-  string phone = 2;
+  string  = 2;
 }
 
 service User {

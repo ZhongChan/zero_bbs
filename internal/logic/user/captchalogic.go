@@ -1,4 +1,4 @@
-package logic
+package user
 
 import (
 	"context"
@@ -23,7 +23,6 @@ func NewCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) CaptchaLog
 	}
 }
 
-
 func (l *CaptchaLogic) Captcha(req types.CaptchaRequest) (*types.CaptchaResponse, error) {
 	resp, err := l.svcCtx.UserClient.GetCaptcha(l.ctx, &userclient.CaptchaRequest{
 		Phone: req.Phone,
@@ -33,8 +32,8 @@ func (l *CaptchaLogic) Captcha(req types.CaptchaRequest) (*types.CaptchaResponse
 	}
 
 	return &types.CaptchaResponse{
-		Captcha_key:           resp.CaptchaKey,
-		Expired_at:            resp.ExpiredAt,
-		Captcha_image_content: resp.CaptchaImageContent,
+		CaptchaKey:          resp.CaptchaKey,
+		ExpiredAt:           resp.ExpiredAt,
+		CaptchaImageContent: resp.CaptchaImageContent,
 	}, nil
 }

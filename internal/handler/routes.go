@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	user "zero-mall/zero_bbs/internal/handler/user"
 	"zero-mall/zero_bbs/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
@@ -11,11 +12,25 @@ import (
 
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 	engine.AddRoutes(
+		[]rest.Route{},
+	)
+
+	engine.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
 				Path:    "/api/captcha",
-				Handler: CaptchaHandler(serverCtx),
+				Handler: user.CaptchaHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/verificationCodes",
+				Handler: user.VerificationHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/api/users",
+				Handler: user.UserHandler(serverCtx),
 			},
 		},
 	)

@@ -1,0 +1,51 @@
+
+
+type CaptchaRequest {
+	Phone string `json:"phone"` //手机号码
+}
+
+type CaptchaResponse {
+	CaptchaKey           string `json:"captcha_key"`
+	ExpiredAt            string `json:"expired_at"`
+	CaptchaImageContent string `json:"captcha_image_content"`
+}
+
+type VerificationCodeRequest {
+  CaptchaKey  string `json:"captcha_key"`
+  CaptchaCode string `json:"captcha_code"`
+}
+
+type VerificationCodeResponse {
+  key  string `json:"key"`
+  ExpiredAt  string `json:"expired_at"`
+}
+
+type UserRequest {
+  Name  string `json:"name"`
+  Password string `json:"password"`
+  VerificationKey string `json:"verification_key"`
+  VerificationCode string `json:"verification_code"`
+}
+
+type UserResponse {
+  Name  string `json:"name"`
+  Phone  string `json:"phone"`
+}
+
+@server(
+    group: user
+)
+
+service bbs-api {
+	//创建图片验证码
+	@handler Captcha
+	post /api/captcha (CaptchaRequest) returns(CaptchaResponse)
+
+	//发送短信验证码
+	@handler verification
+	post /api/verificationCodes(VerificationCodeRequest) returns(VerificationCodeResponse)
+
+	//用户注册
+	@handler User
+	post /api/users(UserRequest) returns(UserResponse)
+}

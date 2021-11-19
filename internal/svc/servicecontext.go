@@ -22,13 +22,13 @@ type ServiceContext struct {
 var ErrNotFound = errors.New("data not find")
 
 func timeInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
-	stime := time.Now()
+	startTime := time.Now()
 	err := invoker(ctx, method, req, reply, cc, opts...)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("调用 %s 方法 耗时: %v\n", method, time.Now().Sub(stime))
+	fmt.Printf("调用 %s 方法 耗时: %v\n", method, time.Now().Sub(startTime))
 	return nil
 }
 

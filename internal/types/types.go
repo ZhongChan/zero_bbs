@@ -6,7 +6,29 @@ type CaptchaRequest struct {
 }
 
 type CaptchaResponse struct {
-	Captcha_key           string `json:"captcha_key"`
-	Expired_at            string `json:"expired_at"`
-	Captcha_image_content string `json:"captcha_image_content"`
+	CaptchaKey          string `json:"captcha_key"`
+	ExpiredAt           string `json:"expired_at"`
+	CaptchaImageContent string `json:"captcha_image_content"`
+}
+
+type VerificationCodeRequest struct {
+	CaptchaKey  string `json:"captcha_key"`
+	CaptchaCode string `json:"captcha_code"`
+}
+
+type VerificationCodeResponse struct {
+	Key       string `json:"key"`
+	ExpiredAt string `json:"expired_at"`
+}
+
+type UserRequest struct {
+	Name             string `json:"name"`
+	Password         string `json:"password"`
+	VerificationKey  string `json:"verification_key"`
+	VerificationCode string `json:"verification_code"`
+}
+
+type UserResponse struct {
+	Name  string `json:"name"`
+	Phone string `json:"phone"`
 }
