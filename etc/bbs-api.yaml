@@ -4,3 +4,9 @@ Port: 8888
 
 Cache:
   - Host: localhost:6379
+
+UserRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: user.rpc

@@ -2,10 +2,9 @@ package logic
 
 import (
 	"context"
-	"github.com/mojocn/base64Captcha"
-	"time"
 	"zero-mall/zero_bbs/internal/svc"
 	"zero-mall/zero_bbs/internal/types"
+	"zero-mall/zero_bbs/user/rpc/userclient"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -24,32 +23,18 @@ func NewCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) CaptchaLog
 	}
 }
 
-var store = base64Captcha.DefaultMemStore
 
 func (l *CaptchaLogic) Captcha(req types.CaptchaRequest) (*types.CaptchaResponse, error) {
-	var driver base64Captcha.Driver
-	driver = base64Captcha.DefaultDriverDigit
-
-	id, content, answer := driver.GenerateIdQuestionAnswer()
-	item, err := driver.DrawCaptcha(content)
-	if err != nil {
-		return nil, err
-	}
-
-	//缓存手机号码 和 验证码答案
-	expiredAt := time.Now().Add(time.Minute * 2)
-	err = l.svcCtx.Cache.SetWithExpire(id, map[string]interface{}{
-		"phone":  req.Phone,
-		"answer": answer,
-	}, time.Second*2)
-
+	resp, err := l.svcCtx.UserClient.GetCaptcha(l.ctx, &userclient.CaptchaRequest{
+		Phone: req.Phone,
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.CaptchaResponse{
-		Captcha_key:           id,
-		Expired_at:            expiredAt.String(),
-		Captcha_image_content: item.EncodeB64string(),
+		Captcha_key:           resp.CaptchaKey,
+		Expired_at:            resp.ExpiredAt,
+		Captcha_image_content: resp.CaptchaImageContent,
 	}, nil
 }
