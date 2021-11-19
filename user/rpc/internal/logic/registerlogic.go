@@ -42,6 +42,9 @@ func (l *RegisterLogic) Register(in *user.UserRequest) (*user.UserResponse, erro
 		return nil, errors.New("短信验证码错误！")
 	}
 
+	//TODO 添加更多字段
+	//TODO 优化 sql 生成的 model 字段值
+
 	//register user
 	_, err = l.svcCtx.UserModel.Insert(model.Users{
 		Name: in.Name,
