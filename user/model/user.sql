@@ -1,10 +1,13 @@
 create table users
 (
-    id                 int unsigned auto_increment,
+    id                 bigint unsigned auto_increment,
     name               varchar(255)             not null,
-    email              varchar(255)             not null,
+    phone              varchar(255)             null,
+    email              varchar(255)             null,
     email_verified_at  timestamp                null,
-    password           varchar(255)             not null,
+    password           varchar(255)             null,
+    weixin_openid      varchar(255)             null,
+    weixin_unionid     varchar(255)             null,
     remember_token     varchar(100)             null,
     created_at         timestamp                null,
     updated_at         timestamp                null,
@@ -12,7 +15,16 @@ create table users
     introduction       varchar(255)             null,
     notification_count int unsigned default '0' not null,
     last_actived_at    timestamp                null,
+    registration_id    varchar(255)             null,
     primary key (id),
-    constraint users_email_unique unique (email)
-) collate = utf8mb4_unicode_ci;
+    constraint users_email_unique
+        unique (email),
+    constraint users_phone_unique
+        unique (phone),
+    constraint users_weixin_openid_unique
+        unique (weixin_openid),
+    constraint users_weixin_unionid_unique
+        unique (weixin_unionid)
+)
+    collate = utf8mb4_unicode_ci;
 
