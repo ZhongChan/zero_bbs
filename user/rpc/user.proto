@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package user;
+
+message CaptchaRequest {
+  string phone = 1;
+}
+
+message CaptchaResponse {
+  string captcha_key = 1;
+  string expired_at = 2;
+  string captcha_image_content = 3;
+}
+
+service User {
+  rpc GetCaptcha(CaptchaRequest) returns(CaptchaResponse);
+}
