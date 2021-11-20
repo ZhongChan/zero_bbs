@@ -10,8 +10,10 @@ import (
 
 func InfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userId := r.Header.Get("x-user-id")
+
 		l := user.NewInfoLogic(r.Context(), ctx)
-		resp, err := l.Info()
+		resp, err := l.Info(userId)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {
