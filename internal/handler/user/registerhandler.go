@@ -9,7 +9,7 @@ import (
 	"zero-mall/zero_bbs/internal/types"
 )
 
-func UserHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func RegisterHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.UserRequest
 		if err := httpx.Parse(r, &req); err != nil {
@@ -17,8 +17,8 @@ func UserHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := user.NewUserLogic(r.Context(), ctx)
-		resp, err := l.User(req)
+		l := user.NewRegisterLogic(r.Context(), ctx)
+		resp, err := l.Register(req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

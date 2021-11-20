@@ -10,21 +10,21 @@ import (
 	"github.com/tal-tech/go-zero/core/logx"
 )
 
-type UserLogic struct {
+type RegisterLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) UserLogic {
-	return UserLogic{
+func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) RegisterLogic {
+	return RegisterLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *UserLogic) User(req types.UserRequest) (*types.UserResponse, error) {
+func (l *RegisterLogic) Register(req types.UserRequest) (*types.UserResponse, error) {
 	resp, err := l.svcCtx.UserClient.Register(l.ctx, &userclient.UserRequest{
 		Name:             req.Name,
 		Password:         req.Password,

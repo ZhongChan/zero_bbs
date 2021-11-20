@@ -26,7 +26,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 }
 
 func (l *LoginLogic) Login(req types.LoginRequest) (*types.LoginResponse, error) {
-	// todo: add your logic here and delete this line
+	//TODO 获取用户信息
 	jwtToken, err := l.GetJwtToken(1)
 	if err != nil {
 		return nil, err

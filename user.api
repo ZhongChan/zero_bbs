@@ -62,7 +62,7 @@ service bbs-api {
 	post /api/verificationCodes(VerificationCodeRequest) returns(VerificationCodeResponse)
 
 	//用户注册
-	@handler User
+	@handler Register
 	post /api/users(UserRequest) returns(UserResponse)
 
 	//用户注册
