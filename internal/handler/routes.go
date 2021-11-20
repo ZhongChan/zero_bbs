@@ -39,4 +39,18 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 	)
+
+	engine.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.UserCheck},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/api/info",
+					Handler: user.InfoHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
 }

@@ -70,3 +70,13 @@ service bbs-api {
 	post /api/login(LoginRequest) returns(LoginResponse)
 
 }
+
+@server(
+	jwt: Auth
+	group: user
+	middleware: UserCheck
+)
+service bbs-api {
+	@handler info
+	get /api/info returns (UserResponse)
+}

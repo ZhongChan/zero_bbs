@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/syncx"
+	"github.com/tal-tech/go-zero/rest"
 	"github.com/tal-tech/go-zero/zrpc"
 	"google.golang.org/grpc"
 	"time"
 	"zero-mall/zero_bbs/internal/config"
+	"zero-mall/zero_bbs/internal/middleware"
 	"zero-mall/zero_bbs/user/rpc/userclient"
 )
 
@@ -17,6 +19,7 @@ type ServiceContext struct {
 	Config     config.Config
 	Cache      cache.Cache
 	UserClient userclient.User
+	UserCheck  rest.Middleware
 }
 
 var ErrNotFound = errors.New("data not find")
@@ -36,10 +39,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	ca := cache.New(c.Cache, syncx.NewSingleFlight(), cache.NewStat("dc"), ErrNotFound)
 	ur := userclient.NewUser(zrpc.MustNewClient(c.UserRpc, zrpc.WithUnaryClientInterceptor(timeInterceptor)))
+	uc := middleware.NewUserCheckMiddleware().Handle
 
 	return &ServiceContext{
 		Config:     c,
 		Cache:      ca,
 		UserClient: ur,
+		UserCheck:  uc,
 	}
 }
