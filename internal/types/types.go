@@ -32,3 +32,19 @@ type UserResponse struct {
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
 }
+
+type LoginRequest struct {
+	Phone    string `json:"name"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	Name string `json:"name"`
+	JwtToken
+}
+
+type JwtToken struct {
+	AccessToken  string `json:"access_token,omitempty"`
+	AccessExpire int64  `json:"access_expire,omitempty"`
+	RefreshAfter int64  `json:"refresh_after,omitempty"`
+}

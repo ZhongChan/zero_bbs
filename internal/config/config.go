@@ -10,4 +10,9 @@ type Config struct {
 	rest.RestConf
 	Cache   cache.CacheConf
 	UserRpc zrpc.RpcClientConf
+
+	Auth struct {
+		AccessSecret string
+		AccessExpire int64
+	}
 }

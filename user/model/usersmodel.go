@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
@@ -52,8 +53,8 @@ type (
 		WeixinOpenid      sql.NullString `db:"weixin_openid"`
 		WeixinUnionid     sql.NullString `db:"weixin_unionid"`
 		RememberToken     sql.NullString `db:"remember_token"`
-		CreatedAt         sql.NullTime   `db:"created_at"`
-		UpdatedAt         sql.NullTime   `db:"updated_at"`
+		CreatedAt         time.Time      `db:"created_at"`
+		UpdatedAt         time.Time      `db:"updated_at"`
 		Avatar            sql.NullString `db:"avatar"`
 		Introduction      sql.NullString `db:"introduction"`
 		NotificationCount int64          `db:"notification_count"`
@@ -179,15 +180,15 @@ func (m *defaultUsersModel) FindOneByWeixinUnionid(weixinUnionid sql.NullString)
 }
 
 func (m *defaultUsersModel) Update(data Users) error {
+	usersWeixinOpenidKey := fmt.Sprintf("%s%v", cacheUsersWeixinOpenidPrefix, data.WeixinOpenid)
+	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
 	usersIdKey := fmt.Sprintf("%s%v", cacheUsersIdPrefix, data.Id)
 	usersEmailKey := fmt.Sprintf("%s%v", cacheUsersEmailPrefix, data.Email)
 	usersPhoneKey := fmt.Sprintf("%s%v", cacheUsersPhonePrefix, data.Phone)
-	usersWeixinOpenidKey := fmt.Sprintf("%s%v", cacheUsersWeixinOpenidPrefix, data.WeixinOpenid)
-	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, usersRowsWithPlaceHolder)
 		return conn.Exec(query, data.Name, data.Phone, data.Email, data.EmailVerifiedAt, data.Password, data.WeixinOpenid, data.WeixinUnionid, data.RememberToken, data.CreatedAt, data.UpdatedAt, data.Avatar, data.Introduction, data.NotificationCount, data.LastActivedAt, data.RegistrationId, data.Id)
-	}, usersPhoneKey, usersWeixinOpenidKey, usersWeixinUnionidKey, usersIdKey, usersEmailKey)
+	}, usersWeixinUnionidKey, usersIdKey, usersEmailKey, usersPhoneKey, usersWeixinOpenidKey)
 	return err
 }
 
@@ -197,15 +198,15 @@ func (m *defaultUsersModel) Delete(id int64) error {
 		return err
 	}
 
+	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
+	usersIdKey := fmt.Sprintf("%s%v", cacheUsersIdPrefix, id)
 	usersEmailKey := fmt.Sprintf("%s%v", cacheUsersEmailPrefix, data.Email)
 	usersPhoneKey := fmt.Sprintf("%s%v", cacheUsersPhonePrefix, data.Phone)
 	usersWeixinOpenidKey := fmt.Sprintf("%s%v", cacheUsersWeixinOpenidPrefix, data.WeixinOpenid)
-	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
-	usersIdKey := fmt.Sprintf("%s%v", cacheUsersIdPrefix, id)
 	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.Exec(query, id)
-	}, usersPhoneKey, usersWeixinOpenidKey, usersWeixinUnionidKey, usersIdKey, usersEmailKey)
+	}, usersIdKey, usersEmailKey, usersPhoneKey, usersWeixinOpenidKey, usersWeixinUnionidKey)
 	return err
 }
 
