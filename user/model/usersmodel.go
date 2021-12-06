@@ -6,15 +6,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/tal-tech/go-zero/core/stores/builder"
 	"github.com/tal-tech/go-zero/core/stores/cache"
 	"github.com/tal-tech/go-zero/core/stores/sqlc"
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 	"github.com/tal-tech/go-zero/core/stringx"
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/builderx"
 )
 
 var (
-	usersFieldNames          = builderx.RawFieldNames(&Users{})
+	usersFieldNames          = builder.RawFieldNames(&Users{})
 	usersRows                = strings.Join(usersFieldNames, ",")
 	usersRowsExpectAutoSet   = strings.Join(stringx.Remove(usersFieldNames, "`id`", "`create_time`", "`update_time`"), ",")
 	usersRowsWithPlaceHolder = strings.Join(stringx.Remove(usersFieldNames, "`id`", "`create_time`", "`update_time`"), "=?,") + "=?"
@@ -28,13 +28,13 @@ var (
 
 type (
 	UsersModel interface {
-		Insert(data Users) (sql.Result, error)
+		Insert(data *Users) (sql.Result, error)
 		FindOne(id int64) (*Users, error)
 		FindOneByEmail(email sql.NullString) (*Users, error)
 		FindOneByPhone(phone sql.NullString) (*Users, error)
 		FindOneByWeixinOpenid(weixinOpenid sql.NullString) (*Users, error)
 		FindOneByWeixinUnionid(weixinUnionid sql.NullString) (*Users, error)
-		Update(data Users) error
+		Update(data *Users) error
 		Delete(id int64) error
 	}
 
@@ -53,8 +53,8 @@ type (
 		WeixinOpenid      sql.NullString `db:"weixin_openid"`
 		WeixinUnionid     sql.NullString `db:"weixin_unionid"`
 		RememberToken     sql.NullString `db:"remember_token"`
-		CreatedAt         time.Time      `db:"created_at"`
-		UpdatedAt         time.Time      `db:"updated_at"`
+		CreateTime        time.Time      `db:"create_time"` // 创建时间
+		UpdateTime        time.Time      `db:"update_time"`
 		Avatar            sql.NullString `db:"avatar"`
 		Introduction      sql.NullString `db:"introduction"`
 		NotificationCount int64          `db:"notification_count"`
@@ -70,15 +70,16 @@ func NewUsersModel(conn sqlx.SqlConn, c cache.CacheConf) UsersModel {
 	}
 }
 
-func (m *defaultUsersModel) Insert(data Users) (sql.Result, error) {
+func (m *defaultUsersModel) Insert(data *Users) (sql.Result, error) {
+	usersIdKey := fmt.Sprintf("%s%v", cacheUsersIdPrefix, data.Id)
 	usersEmailKey := fmt.Sprintf("%s%v", cacheUsersEmailPrefix, data.Email)
 	usersPhoneKey := fmt.Sprintf("%s%v", cacheUsersPhonePrefix, data.Phone)
 	usersWeixinOpenidKey := fmt.Sprintf("%s%v", cacheUsersWeixinOpenidPrefix, data.WeixinOpenid)
 	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
 	ret, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, usersRowsExpectAutoSet)
-		return conn.Exec(query, data.Name, data.Phone, data.Email, data.EmailVerifiedAt, data.Password, data.WeixinOpenid, data.WeixinUnionid, data.RememberToken, data.CreatedAt, data.UpdatedAt, data.Avatar, data.Introduction, data.NotificationCount, data.LastActivedAt, data.RegistrationId)
-	}, usersEmailKey, usersPhoneKey, usersWeixinOpenidKey, usersWeixinUnionidKey)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, usersRowsExpectAutoSet)
+		return conn.Exec(query, data.Name, data.Phone, data.Email, data.EmailVerifiedAt, data.Password, data.WeixinOpenid, data.WeixinUnionid, data.RememberToken, data.Avatar, data.Introduction, data.NotificationCount, data.LastActivedAt, data.RegistrationId)
+	}, usersIdKey, usersEmailKey, usersPhoneKey, usersWeixinOpenidKey, usersWeixinUnionidKey)
 	return ret, err
 }
 
@@ -179,16 +180,16 @@ func (m *defaultUsersModel) FindOneByWeixinUnionid(weixinUnionid sql.NullString)
 	}
 }
 
-func (m *defaultUsersModel) Update(data Users) error {
-	usersWeixinOpenidKey := fmt.Sprintf("%s%v", cacheUsersWeixinOpenidPrefix, data.WeixinOpenid)
-	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
+func (m *defaultUsersModel) Update(data *Users) error {
 	usersIdKey := fmt.Sprintf("%s%v", cacheUsersIdPrefix, data.Id)
 	usersEmailKey := fmt.Sprintf("%s%v", cacheUsersEmailPrefix, data.Email)
 	usersPhoneKey := fmt.Sprintf("%s%v", cacheUsersPhonePrefix, data.Phone)
+	usersWeixinOpenidKey := fmt.Sprintf("%s%v", cacheUsersWeixinOpenidPrefix, data.WeixinOpenid)
+	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
 	_, err := m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, usersRowsWithPlaceHolder)
-		return conn.Exec(query, data.Name, data.Phone, data.Email, data.EmailVerifiedAt, data.Password, data.WeixinOpenid, data.WeixinUnionid, data.RememberToken, data.CreatedAt, data.UpdatedAt, data.Avatar, data.Introduction, data.NotificationCount, data.LastActivedAt, data.RegistrationId, data.Id)
-	}, usersWeixinUnionidKey, usersIdKey, usersEmailKey, usersPhoneKey, usersWeixinOpenidKey)
+		return conn.Exec(query, data.Name, data.Phone, data.Email, data.EmailVerifiedAt, data.Password, data.WeixinOpenid, data.WeixinUnionid, data.RememberToken, data.Avatar, data.Introduction, data.NotificationCount, data.LastActivedAt, data.RegistrationId, data.Id)
+	}, usersEmailKey, usersPhoneKey, usersWeixinOpenidKey, usersWeixinUnionidKey, usersIdKey)
 	return err
 }
 
@@ -198,15 +199,15 @@ func (m *defaultUsersModel) Delete(id int64) error {
 		return err
 	}
 
-	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
 	usersIdKey := fmt.Sprintf("%s%v", cacheUsersIdPrefix, id)
 	usersEmailKey := fmt.Sprintf("%s%v", cacheUsersEmailPrefix, data.Email)
 	usersPhoneKey := fmt.Sprintf("%s%v", cacheUsersPhonePrefix, data.Phone)
 	usersWeixinOpenidKey := fmt.Sprintf("%s%v", cacheUsersWeixinOpenidPrefix, data.WeixinOpenid)
+	usersWeixinUnionidKey := fmt.Sprintf("%s%v", cacheUsersWeixinUnionidPrefix, data.WeixinUnionid)
 	_, err = m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where `id` = ?", m.table)
 		return conn.Exec(query, id)
-	}, usersIdKey, usersEmailKey, usersPhoneKey, usersWeixinOpenidKey, usersWeixinUnionidKey)
+	}, usersPhoneKey, usersWeixinOpenidKey, usersWeixinUnionidKey, usersIdKey, usersEmailKey)
 	return err
 }
 

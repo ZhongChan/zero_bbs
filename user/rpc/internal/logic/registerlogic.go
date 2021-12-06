@@ -46,7 +46,7 @@ func (l *RegisterLogic) Register(in *user.UserRequest) (*user.UserResponse, erro
 	//TODO 优化 sql 生成的 model 字段值
 
 	//register user
-	_, err = l.svcCtx.UserModel.Insert(model.Users{
+	_, err = l.svcCtx.UserModel.Insert(&model.Users{
 		Name: in.Name,
 		Password: sql.NullString{
 			String: in.Password,

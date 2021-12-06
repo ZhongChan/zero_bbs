@@ -1,30 +1,28 @@
-create table users
+CREATE TABLE `users`
 (
-    id                 bigint unsigned auto_increment,
-    name               varchar(255) not null,
-    phone              varchar(255) null,
-    email              varchar(255) null,
-    email_verified_at  timestamp    null,
-    password           varchar(255) null,
-    weixin_openid      varchar(255) null,
-    weixin_unionid     varchar(255) null,
-    remember_token     varchar(100) null,
-    created_at         timestamp    null default current_timestamp,
-    updated_at         timestamp    null default current_timestamp on update current_timestamp,
-    avatar             varchar(255) null,
-    introduction       varchar(255) null,
-    notification_count int unsigned      default '0' not null,
-    last_actived_at    timestamp    null,
-    registration_id    varchar(255) null,
-    primary key (id),
-    constraint users_email_unique
-        unique (email),
-    constraint users_phone_unique
-        unique (phone),
-    constraint users_weixin_openid_unique
-        unique (weixin_openid),
-    constraint users_weixin_unionid_unique
-        unique (weixin_unionid)
-)
-    collate = utf8mb4_unicode_ci;
+    `id`                 bigint unsigned                         NOT NULL AUTO_INCREMENT,
+    `name`               varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+    `phone`              varchar(255) COLLATE utf8mb4_unicode_ci                       DEFAULT NULL,
+    `email`              varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `email_verified_at`  timestamp                               NULL                  DEFAULT NULL,
+    `password`           varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `weixin_openid`      varchar(255) COLLATE utf8mb4_unicode_ci                       DEFAULT NULL,
+    `weixin_unionid`     varchar(255) COLLATE utf8mb4_unicode_ci                       DEFAULT NULL,
+    `remember_token`     varchar(100) COLLATE utf8mb4_unicode_ci                       DEFAULT NULL,
+    `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `avatar`             varchar(255) COLLATE utf8mb4_unicode_ci                       DEFAULT NULL,
+    `introduction`       varchar(255) COLLATE utf8mb4_unicode_ci                       DEFAULT NULL,
+    `notification_count` int unsigned                            NOT NULL              DEFAULT '0',
+    `last_actived_at`    timestamp                               NULL                  DEFAULT NULL,
+    `registration_id`    varchar(255) COLLATE utf8mb4_unicode_ci                       DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `users_email_unique` (`email`),
+    UNIQUE KEY `users_phone_unique` (`phone`),
+    UNIQUE KEY `users_weixin_openid_unique` (`weixin_openid`),
+    UNIQUE KEY `users_weixin_unionid_unique` (`weixin_unionid`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 11
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci
 
