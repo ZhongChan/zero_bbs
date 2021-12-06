@@ -65,7 +65,7 @@ service bbs-api {
 	@handler Register
 	post /api/users(UserRequest) returns(UserResponse)
 
-	//用户注册
+	//用户登录
 	@handler Login
 	post /api/login(LoginRequest) returns(LoginResponse)
 

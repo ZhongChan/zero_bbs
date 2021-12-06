@@ -31,11 +31,35 @@ message UserRequest {
 
 message UserResponse {
   string name = 1;
-  string  = 2;
+  string phone = 2;
+}
+
+//登陆请求
+message LoginRequest {
+  string phone = 1;
+  int64  type = 2;
+  string password = 3;
+}
+
+//返回用户信息
+message UserReply {
+  int64 uid = 1;
+  string username = 2;
+  string phone = 3;
+  string nickname = 4;
+  JwtToken jwttoken = 5;
+}
+
+message JwtToken {
+  string accessToken = 1;
+  int64 accessExpire = 2;
+  int64 refreshAfter = 3;
 }
 
 service User {
   rpc GetCaptcha(CaptchaRequest) returns(CaptchaResponse);
   rpc VerificationCodes(VerificationCodeRequest)   returns(VerificationCodeResponse);
   rpc Register(UserRequest) returns(UserResponse);
+  rpc Login(LoginRequest) returns(UserReply);
+
 }
