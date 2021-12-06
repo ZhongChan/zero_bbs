@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"time"
+	"zero-mall/zero_bbs/user/rpc/userclient"
 
 	"zero-mall/zero_bbs/internal/svc"
 	"zero-mall/zero_bbs/internal/types"
@@ -26,7 +27,14 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 }
 
 func (l *LoginLogic) Login(req types.LoginRequest) (*types.LoginResponse, error) {
-	//TODO 获取用户信息
+	userReply, err := l.svcCtx.UserClient.Login(l.ctx, &userclient.LoginRequest{
+		Phone:    req.Phone,
+		Type:     0,
+		Password: req.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
 
 	jwtToken, err := l.GetJwtToken(1)
 	if err != nil {
@@ -34,7 +42,7 @@ func (l *LoginLogic) Login(req types.LoginRequest) (*types.LoginResponse, error)
 	}
 
 	return &types.LoginResponse{
-		Name:     "caesar",
+		Name:     userReply.Username,
 		JwtToken: jwtToken,
 	}, nil
 }

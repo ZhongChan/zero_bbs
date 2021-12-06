@@ -33,7 +33,7 @@ type UserResponse {
 }
 
 type LoginRequest {
-    Phone string `json:"name"`
+    Phone string `json:"phone"`
     Password string `json:"password"`
 }
 

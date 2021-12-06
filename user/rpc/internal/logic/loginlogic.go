@@ -37,13 +37,9 @@ func (l *LoginLogic) Login(in *user.LoginRequest) (*user.UserReply, error) {
 			return nil, errorIncorrectPassword
 		}
 
-		hash, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
+		err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password.String), []byte(in.Password))
 		if err != nil {
-			return nil, errorIncorrectPassword
-		}
-
-		err = bcrypt.CompareHashAndPassword(hash, []byte(userInfo.Password.String))
-		if err != nil {
+			logx.Error(err)
 			return nil, errorIncorrectPassword
 		}
 
